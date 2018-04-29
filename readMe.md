@@ -32,5 +32,5 @@ node app
 # API Usage
 The project was tested using postman, and the sample values for each endpoint are indicated (as exported from postman) in
 ```
-postman.json
+endpoints.json
 ```
