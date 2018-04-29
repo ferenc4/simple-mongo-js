@@ -8,6 +8,13 @@ const config = require('../config/config');
 let cache = new CachemanMongo(config.db, config.cache.collectionName);
 let timeToLive = config.cache.timeToLive;
 
+const saveToCache = (key, value) => {
+    cache.set(key, value, timeToLive, (err, value) => {
+        if (err) throw err;
+        console.log(value);
+    });
+};
+
 module.exports = {
     home: (req, res) => {
         res.send("See endpoints.json for usage, and readMe.md for more info");
@@ -21,12 +28,6 @@ module.exports = {
                 res.json(messages);
             }
         })
-    },
-    saveToCache: (key, value) => {
-        cache.set(key, value, timeToLive, (err, value) => {
-            if (err) throw err;
-            console.log(value);
-        });
     },
     getMessage: (req, res) => {
         let id = req.params.id;
