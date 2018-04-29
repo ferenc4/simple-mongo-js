@@ -26,7 +26,7 @@ Note: you may need to run it from the specific folder if you have many mongo db 
 
 To run the server app
 ```
-
+node app
 ```
 
 # API Usage
