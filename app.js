@@ -2,14 +2,15 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+//Used this instead of redis, because of developing on Windows at the time
+const CachemanMongo = require('cacheman-mongo');
 const Message = require('./models/message');
 //Connect to mongoose
-var uri = "mongodb://localhost/messages";
-// var uri = "mongodb://messenger:mysafepassword@freecluster-shard-00-00-bsa9p.mongodb.net:27017/telstra-grad-interview-2019&authSource=admin";
-//,freecluster-shard-00-01-bsa9p.mongodb.net:27017,freecluster-shard-00-02-bsa9p.mongodb.net:27017
+let uri = "mongodb://localhost/messages";
+// let uri = "mongodb://messenger:mysafepassword@freecluster-shard-00-00-bsa9p.mongodb.net:27017/telstra-grad-interview-2019&authSource=admin";
 mongoose.connect(uri);
-const db = mongoose.connection;
+let cache = new CachemanMongo(uri, {collection: 'cache'});
+let db = mongoose.connection;
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -26,18 +27,46 @@ app.get('/messages', function (req, res) {
         }
     })
 });
+
+saveToCache = function (key, value) {
+    let timeToLive = 30;//seconds
+    cache.set(key, value, timeToLive, function (err, value) {
+        if (err) throw err;
+        console.log(value);
+    });
+};
+
 app.get('/messages/:id', function (req, res) {
-    var id = req.params.id;
-    Message.getMessageById(id, function (err, data) {
-        if (err) {
-            res.json(err);//testing only
+    let id = req.params.id;
+    let template = {status: 200};
+    cache.get(id, function (err, data) {
+        if (err) throw err;
+        if (data) {
+            console.log("Retrieved from cache: " + JSON.stringify(data));
+            template.data = data;
+            res.json(template)
         } else {
-            res.json(data);
+            Message.getMessageById(id, function (err, data) {
+                if (err) {
+                    res.json(err);//testing only
+                } else {
+                    if (data) {
+                        saveToCache(data.id, data);
+                        console.log("Retrieved from db: " + JSON.stringify(data));
+                        template.data = data;
+                        res.json(template)
+                    } else {
+                        template.status = 404;
+                        template.message = "Resource not found.";
+                        res.json(template)
+                    }
+                }
+            });
         }
-    })
+    });
 });
 app.post('/messages', function (req, res) {
-    var data = {
+    let data = {
         _id: req.body.id,
         message: req.body.message
     };
@@ -50,14 +79,16 @@ app.post('/messages', function (req, res) {
         }
     })
 });
-//todo
 app.post('/admin', function (req, res) {
-    var action = req.body.action;
-    if(action === "clearcache"){
-
+    let action = req.body.action;
+    if (action === "clearcache") {
+        cache.clear(function (err) {
+            if (err) throw err;
+            res.json({status: 204})
+        });
     }
 });
 const port = process.env.PORT || 3000;
-var server = app.listen(port, function () {
+let server = app.listen(port, function () {
     console.log('Express server listening on port ' + port);
 });

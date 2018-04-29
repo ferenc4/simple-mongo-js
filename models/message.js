@@ -1,7 +1,6 @@
-var mongoose = require('mongoose');
-
+let mongoose = require('mongoose');
 // message Schema
-var messageSchema = mongoose.Schema({
+let messageSchema = mongoose.Schema({
     _id: {
         type: Number,
         required: true,
@@ -17,9 +16,9 @@ var messageSchema = mongoose.Schema({
     }
 });
 
-var Message = module.exports = mongoose.model('Message', messageSchema);
+let Message = module.exports = mongoose.model('Message', messageSchema);
 
-//testing only
+// Testing only - not cached
 // Get all messages
 module.exports.getMessages = function (callback, limit) {
     Message.find(callback).limit(limit);
@@ -30,24 +29,22 @@ module.exports.addMessage = function (message, callback) {
     Message.create(message, callback);
 };
 
-//todo
-// // Update message
-// module.exports.updateMessage = function (id, message, options, callback) {
-//     var query = {_id: id};
-//     var update = {
-//         message: message
-//     };
-//     Message.findOneAndUpdate(query, update, options, callback);
-// };
+// Update message
+module.exports.updateMessage = function (id, message, options, callback) {
+    let query = {_id: id};
+    let update = {
+        message: message
+    };
+    Message.findOneAndUpdate(query, update, options, callback);
+};
 
 // Get message by id
 module.exports.getMessageById = function (id, callback) {
     Message.findById(id, callback);
 };
 
-//todo
-// // Delete genre
-// module.exports.deleteGenre = function (id, callback) {
-//     var query = {_id: id};
-//     Genre.deleteOne(query, callback);
-// };
+// Delete message
+module.exports.deleteMessage = function (id, callback) {
+    let query = {_id: id};
+    Message.deleteOne(query, callback);
+};

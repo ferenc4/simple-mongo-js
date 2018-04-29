@@ -10,8 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
+    "cacheman-mongo": "^1.0.3",
     "express": "^4.16.2",
-    "mongoose": "^4.12.3",
-    "redis": "^2.8.0"
+    "mongoose": "^4.12.3"
   }
 }
