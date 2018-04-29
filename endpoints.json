@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "8c59aa09-f531-4e6d-9e88-79cc3d2f49e6",
+		"name": "Telstra-Grad-Interview-2019",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get all messages",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"first_name\":\"Peter\",\n  \"last_name\":\"Parker\",\n  \"address\":\"3rd floor in some building\",\n  \"city\":\"New York City\",\n  \"state\":\"New York State\",\n  \"postcode\":\"10017\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/messages",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add a message",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "id",
+							"value": "2019",
+							"type": "text",
+							"description": ""
+						},
+						{
+							"key": "message",
+							"value": "Telstra 2019 Graduate Program",
+							"type": "text",
+							"description": ""
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/messages",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get a message",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"first_name\":\"Peter\",\n  \"last_name\":\"Parker\",\n  \"address\":\"3rd floor in some building\",\n  \"city\":\"New York City\",\n  \"state\":\"New York State\",\n  \"postcode\":\"10017\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:3000/messages/2018",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"messages",
+						"2018"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Clear the cache",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {},
+				"url": {
+					"raw": "http://localhost:3000/admin/cache/clear",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"admin",
+						"cache",
+						"clear"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set cache lifelength",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "timeToLive",
+							"value": "10",
+							"description": "",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/admin/cache",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"admin",
+						"cache"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
