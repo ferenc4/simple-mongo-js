@@ -12,8 +12,7 @@ mongoose.connect(uri);
 let cache = new CachemanMongo(uri, {collection: 'cache'});
 let db = mongoose.connection;
 let timeToLive = 30;//seconds
-
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '20mb'}));
 app.use(bodyParser.urlencoded({extended: true}));
 app.get('/', function (req, res) {
     res.send('Send POST requests to "/message" or GET requests to "/message/:id" </a>');
