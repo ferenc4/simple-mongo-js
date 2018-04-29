@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const Message = require('./models/message');
 //Connect to mongoose
 var uri = "mongodb://localhost/messages";
+// var uri = "mongodb://messenger:mysafepassword@freecluster-shard-00-00-bsa9p.mongodb.net:27017/telstra-grad-interview-2019&authSource=admin";
+//,freecluster-shard-00-01-bsa9p.mongodb.net:27017,freecluster-shard-00-02-bsa9p.mongodb.net:27017
 mongoose.connect(uri);
 const db = mongoose.connection;
 
@@ -18,7 +20,7 @@ app.get('/', function (req, res) {
 app.get('/messages', function (req, res) {
     Message.getMessages(function (err, messages) {
         if (err) {
-            res.json(err);
+            res.json(err);//testing only
         } else {
             res.json(messages);
         }
@@ -28,7 +30,7 @@ app.get('/messages/:id', function (req, res) {
     var id = req.params.id;
     Message.getMessageById(id, function (err, data) {
         if (err) {
-            res.json(err);
+            res.json(err);//testing only
         } else {
             res.json(data);
         }
@@ -41,14 +43,20 @@ app.post('/messages', function (req, res) {
     };
     Message.addMessage(data, function (err, data) {
         if (err) {
-            res.json(err);
+            res.json(err);//testing only
         }
         else {
             res.json(data);
         }
     })
 });
+//todo
+app.post('/admin', function (req, res) {
+    var action = req.body.action;
+    if(action === "clearcache"){
 
+    }
+});
 const port = process.env.PORT || 3000;
 var server = app.listen(port, function () {
     console.log('Express server listening on port ' + port);
