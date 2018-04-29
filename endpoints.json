@@ -18,10 +18,7 @@
 						"value": "application/json"
 					}
 				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"first_name\":\"Peter\",\n  \"last_name\":\"Parker\",\n  \"address\":\"3rd floor in some building\",\n  \"city\":\"New York City\",\n  \"state\":\"New York State\",\n  \"postcode\":\"10017\"\n}"
-				},
+				"body": {},
 				"url": {
 					"raw": "http://localhost:3000/messages",
 					"protocol": "http",
