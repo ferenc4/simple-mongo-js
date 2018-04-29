@@ -15,7 +15,7 @@ let timeToLive = 30;//seconds
 app.use(bodyParser.json({limit: '20mb'}));
 app.use(bodyParser.urlencoded({extended: true}));
 app.get('/', function (req, res) {
-    res.send('Send POST requests to "/message" or GET requests to "/message/:id" </a>');
+    res.send("See endpoints.json for usage, and readMe.md for more info");
 });
 //testing only
 app.get('/messages', function (req, res) {
