@@ -11,6 +11,7 @@ let uri = "mongodb://localhost/messages";
 mongoose.connect(uri);
 let cache = new CachemanMongo(uri, {collection: 'cache'});
 let db = mongoose.connection;
+let timeToLive = 30;//seconds
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -29,7 +30,6 @@ app.get('/messages', function (req, res) {
 });
 
 saveToCache = function (key, value) {
-    let timeToLive = 30;//seconds
     cache.set(key, value, timeToLive, function (err, value) {
         if (err) throw err;
         console.log(value);
@@ -38,27 +38,29 @@ saveToCache = function (key, value) {
 
 app.get('/messages/:id', function (req, res) {
     let id = req.params.id;
-    let template = {status: 200};
+    let response = {status: 200};
     cache.get(id, function (err, data) {
         if (err) throw err;
         if (data) {
             console.log("Retrieved from cache: " + JSON.stringify(data));
-            template.data = data;
-            res.json(template)
+            response.data = data;
+            res.json(response)
         } else {
             Message.getMessageById(id, function (err, data) {
                 if (err) {
-                    res.json(err);//testing only
+                    response.status = err.code;
+                    response.message = err.errmsg;
+                    res.json(response);
                 } else {
                     if (data) {
                         saveToCache(data.id, data);
                         console.log("Retrieved from db: " + JSON.stringify(data));
-                        template.data = data;
-                        res.json(template)
+                        response.data = data;
+                        res.json(response)
                     } else {
-                        template.status = 404;
-                        template.message = "Resource not found.";
-                        res.json(template)
+                        response.status = 404;
+                        response.message = "Resource not found";
+                        res.json(response)
                     }
                 }
             });
@@ -66,27 +68,32 @@ app.get('/messages/:id', function (req, res) {
     });
 });
 app.post('/messages', function (req, res) {
+    let response = {status: 200};
     let data = {
         _id: req.body.id,
         message: req.body.message
     };
     Message.addMessage(data, function (err, data) {
         if (err) {
-            res.json(err);//testing only
+            response.status = err.code;
+            response.message = err.errmsg;
+            res.json(response);
         }
         else {
-            res.json(data);
+            response.data = data;
+            res.json(response);
         }
     })
 });
-app.post('/admin', function (req, res) {
-    let action = req.body.action;
-    if (action === "clearcache") {
-        cache.clear(function (err) {
-            if (err) throw err;
-            res.json({status: 204})
-        });
-    }
+app.post('/admin/cache/clear', function (req, res) {
+    cache.clear(function (err) {
+        if (err) throw err;
+        res.json({status: 204})
+    });
+});
+app.post('/admin/cache', function (req, res) {
+    timeToLive = req.body.timeToLive;
+    res.json({status: 204})
 });
 const port = process.env.PORT || 3000;
 let server = app.listen(port, function () {
